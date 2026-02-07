@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجري الإلكتروني</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+    <span class="logo">🛒 متجري</span>
+    <button id="installBtn">📥 تثبيت التطبيق</button>
+  </div>
+</header>
+
+<main>
+    <div class="products">
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+            <h3>هاتف ذكي</h3>
+            <span>30000 دج</span>
+            <button onclick="addToCart('هاتف ذكي',30000)">أضف</button>
+        </div>
+
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1585386959984-a41552231693">
+            <h3>سماعات</h3>
+            <span>5000 دج</span>
+            <button onclick="addToCart('سماعات',5000)">أضف</button>
+        </div>
+
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+            <h3>ساعة ذكية</h3>
+            <span>15000 دج</span>
+            <button onclick="addToCart('ساعة ذكية',15000)">أضف</button>
+        </div>
+    </div>
+</main>
+
+<!-- نافذة بيانات الزبون -->
+<div id="formBox">
+  <div class="formContent">
+    <h3>🧾 معلومات الزبون</h3>
+    <input id="name" placeholder="الاسم الكامل">
+    <input id="phone" placeholder="رقم الهاتف">
+    <input id="address" placeholder="العنوان">
+    <button onclick="sendWhatsApp()">📲 إرسال الطلب</button>
+  </div>
+</div>
+
+<div class="cart">
+    <div id="cartItems"></div>
+    <strong>المجموع: <span id="total">0</span> دج</strong>
+    <button class="order" onclick="order()">📲 إرسال واتساب</button>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>

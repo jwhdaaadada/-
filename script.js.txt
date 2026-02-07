@@ -1,0 +1,123 @@
+let cart = [];
+let total = 0;
+
+function addToCart(name, price){
+    // تحقق إذا المنتج موجود بالفعل
+    let item = cart.find(i => i.name === name);
+    if(item){
+        item.qty += 1;
+    } else {
+        cart.push({name, price, qty:1});
+    }
+    calculateTotal();
+    render();
+}
+
+function calculateTotal(){
+    total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+}
+
+// عرض السلة مع الكمية وأزرار +/- وحذف
+function render(){
+    const box = document.getElementById("cartItems");
+    box.innerHTML = "";
+    cart.forEach((item, index) => {
+        box.innerHTML += `
+        <div class="cart-item">
+            <span>${item.name} - ${item.price} دج</span>
+            <div class="qty-controls">
+                <button onclick="decreaseQty(${index})">-</button>
+                <span>${item.qty}</span>
+                <button onclick="increaseQty(${index})">+</button>
+                <button onclick="removeItem(${index})" class="remove">✖</button>
+            </div>
+        </div>
+        `;
+    });
+    document.getElementById("total").innerText = total;
+}
+
+// زيادة/نقصان الكمية
+function increaseQty(index){
+    cart[index].qty += 1;
+    calculateTotal();
+    render();
+}
+function decreaseQty(index){
+    if(cart[index].qty > 1){
+        cart[index].qty -= 1;
+    } else {
+        removeItem(index);
+    }
+    calculateTotal();
+    render();
+}
+
+// حذف عنصر
+function removeItem(index){
+    cart.splice(index, 1);
+    calculateTotal();
+    render();
+}
+
+// نفس وظائف الطلب
+function order(){
+    if(cart.length === 0){
+        alert("السلة فارغة");
+        return;
+    }
+    document.getElementById("formBox").style.display = "flex";
+}
+
+function sendWhatsApp(){
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+
+    if(!name || !phone || !address){
+        alert("يرجى تعبئة جميع الحقول");
+        return;
+    }
+
+    let message = `📦 طلب جديد\nالاسم: ${name}\nالهاتف: ${phone}\nالعنوان: ${address}\n\n🛒 المنتجات:\n`;
+    cart.forEach(item=>{
+        message += `${item.name} x${item.qty} - ${item.price * item.qty} دج\n`;
+    });
+    message += `\n💰 المجموع: ${total} دج`;
+
+    const whatsappNumber = "0777846039"; // ضع رقمك هنا
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+
+    cart = [];
+    total = 0;
+    render();
+    document.getElementById("formBox").style.display = "none";
+}
+
+// إخفاء نافذة عند الضغط خارج المحتوى
+document.getElementById("formBox").addEventListener("click", e=>{
+    if(e.target.id === "formBox") e.target.style.display = "none";
+});
+
+// زر التثبيت
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", e=>{
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "block";
+});
+installBtn.addEventListener("click", async ()=>{
+    installBtn.style.display = "none";
+    if(deferredPrompt){
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    }
+});
+
+// Service Worker
+if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("service-worker.js");
+}
